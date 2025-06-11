@@ -1,4 +1,4 @@
-extends StaticBody3D
+class_name Chunk extends StaticBody3D
 
 # Single block vertices
 const VERTICES = [
@@ -22,11 +22,12 @@ const BACK_FACE = [2, 0, 1, 3]
 
 const DIMENSIONS = Vector3i(8, 64, 8)
 
-@onready var collision_shape_3d: CollisionShape3D = $CollisionShape3D
-@onready var mesh_instance_3d: MeshInstance3D = $MeshInstance3D
+@export var chunk_position: Vector2i
 
+var collision_shape_3d = CollisionShape3D.new()
+var mesh_instance_3d = MeshInstance3D.new()
 var surface_tool: SurfaceTool = SurfaceTool.new()
-var blocks
+var blocks: Array
 var chunk_generator = FlatChunkGenerator.new()
 
 func _ready() -> void:
@@ -39,6 +40,9 @@ func _ready() -> void:
 		for y in DIMENSIONS.y:
 			blocks[x][y] = []
 			blocks[x][y].resize(DIMENSIONS.z)
+			
+	add_child(collision_shape_3d)
+	add_child(mesh_instance_3d)
 			
 	generate()
 	update()
@@ -58,7 +62,7 @@ func update() -> void:
 		for y in range(DIMENSIONS.y):
 			for z in range(DIMENSIONS.z):
 				if blocks[x][y][z] != null:
-					create_block(Vector3i(x, y, z))
+					create_block(Vector3i(chunk_position.x * DIMENSIONS.x + x, y, chunk_position.y * DIMENSIONS.z + z))
 					surface_tool.set_material(blocks[x][y][z].material)
 	var mesh = surface_tool.commit()
 	mesh_instance_3d.mesh = mesh
@@ -90,3 +94,8 @@ func create_face(face: Array, block_position: Vector3i) -> void:
 	
 	surface_tool.add_triangle_fan([a, b, c], [uv_a, uv_b, uv_c], [], [], [normal])
 	surface_tool.add_triangle_fan([a, c, d], [uv_a, uv_c, uv_d], [], [], [normal])
+
+func is_block(block_position: Vector3i) -> bool:
+	if blocks[block_position.x][block_position.y][block_position.z]:
+		return true
+	return false

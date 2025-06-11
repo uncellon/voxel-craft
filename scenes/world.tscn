@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dcr660qxbona2" path="res://scenes/player.tscn" id="1_nnsk1"]
 [ext_resource type="PackedScene" uid="uid://bq7s6ekucwver" path="res://scenes/debug_ui.tscn" id="2_rwgxs"]
-[ext_resource type="PackedScene" uid="uid://naornst0jqq3" path="res://scenes/chunk.tscn" id="3_4wyf3"]
+[ext_resource type="PackedScene" uid="uid://byveqldxgj6e1" path="res://scenes/chunk_manager.tscn" id="3_4wyf3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_e5uuo"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -29,11 +29,13 @@ shadow_enabled = true
 [node name="Player" parent="." instance=ExtResource("1_nnsk1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
-[node name="Chunk" parent="." instance=ExtResource("3_4wyf3")]
-
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, 0, -0.5, 0)
 use_collision = true
 
 [node name="DebugUI" parent="." instance=ExtResource("2_rwgxs")]
 mouse_filter = 1
+
+[node name="ChunkManager" parent="." node_paths=PackedStringArray("player") instance=ExtResource("3_4wyf3")]
+radius = 1
+player = NodePath("../Player")

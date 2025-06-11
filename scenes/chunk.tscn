@@ -4,7 +4,3 @@
 
 [node name="Chunk" type="StaticBody3D"]
 script = ExtResource("1_jas4a")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]

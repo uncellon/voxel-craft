@@ -1,12 +1,50 @@
 extends Node3D
 
+@export var radius: int = 2
 @export var player: CharacterBody3D
 
-# Called when the node enters the scene tree for the first time.
+var player_chunk_position: Vector2i
+var loaded_chunks: Dictionary
+
 func _ready() -> void:
-	pass # Replace with function body.
+	player_chunk_position = get_current_player_chunk_position()	
+	load_chunks_at_player()
+	
+	# Check that player not stuck in current position
+	var current_chunk: Chunk = loaded_chunks[player_chunk_position]
+	var pcp = floor(player.position / 8)
+	for y in range(pcp.y, 64):
+		if current_chunk.is_block(Vector3i(
+			pcp.x - player_chunk_position.x * 8,
+			y,
+			pcp.z - player_chunk_position.y * 8,
+		)) or current_chunk.is_block(Vector3i(
+			pcp.x - player_chunk_position.x * 8,
+			y + 1,
+			pcp.z - player_chunk_position.y * 8,
+		)):
+			continue
+		player.position.y = y + 1
+		break
 
+func _process(_delta: float) -> void:
+	var current_player_chunk_position = get_current_player_chunk_position()
+	if current_player_chunk_position != player_chunk_position:
+		player_chunk_position = current_player_chunk_position
+		load_chunks_at_player()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+func get_current_player_chunk_position() -> Vector2i:
+	# Warning: need to find way how to syncronize size of chunk
+	var pcp = floor(player.position / 8)
+	return Vector2i(pcp.x, pcp.z) 
+
+func load_chunks_at_player() -> void:
+	for x in range(-radius, radius + 1):
+		for z in range(-radius, radius + 1):
+			var chunk_position = player_chunk_position + Vector2i(x, z)
+			if loaded_chunks.has(chunk_position):
+				continue
+			var chunk = Chunk.new()
+			chunk.chunk_position = chunk_position
+			add_child(chunk)
+			loaded_chunks[chunk_position] = chunk
