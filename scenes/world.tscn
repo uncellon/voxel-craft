@@ -37,5 +37,5 @@ use_collision = true
 mouse_filter = 1
 
 [node name="ChunkManager" parent="." node_paths=PackedStringArray("player") instance=ExtResource("3_4wyf3")]
-radius = 1
+radius = 16
 player = NodePath("../Player")

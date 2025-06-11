@@ -47,9 +47,6 @@ func _ready() -> void:
 	generate()
 	update()
 
-func _process(_delta: float) -> void:
-	pass
-
 func generate() -> void:
 	for x in range(DIMENSIONS.x):
 		for y in range(DIMENSIONS.y):

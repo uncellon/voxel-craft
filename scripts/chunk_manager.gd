@@ -31,6 +31,7 @@ func _process(_delta: float) -> void:
 	var current_player_chunk_position = get_current_player_chunk_position()
 	if current_player_chunk_position != player_chunk_position:
 		player_chunk_position = current_player_chunk_position
+		unload_chunks()
 		load_chunks_at_player()
 
 func get_current_player_chunk_position() -> Vector2i:
@@ -46,5 +47,16 @@ func load_chunks_at_player() -> void:
 				continue
 			var chunk = Chunk.new()
 			chunk.chunk_position = chunk_position
-			add_child(chunk)
 			loaded_chunks[chunk_position] = chunk
+			add_child(chunk)
+
+func unload_chunks() -> void:
+	var loaded_chunks_positions: Array = loaded_chunks.keys()
+	for chunk_position in loaded_chunks_positions:
+		if (chunk_position.x - radius > player_chunk_position.x or \
+			chunk_position.x + radius < player_chunk_position.x or \
+			chunk_position.y - radius > player_chunk_position.y or \
+			chunk_position.y + radius < player_chunk_position.y) and \
+			loaded_chunks.has(chunk_position):
+			remove_child(loaded_chunks[chunk_position])
+			loaded_chunks.erase(chunk_position)
