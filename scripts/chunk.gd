@@ -31,6 +31,9 @@ var blocks: Array
 var chunk_generator = FlatChunkGenerator.new()
 
 func _ready() -> void:
+	pass
+
+func init() -> void:
 	# Prepare blocks array
 	blocks = []
 	blocks.resize(DIMENSIONS.x)
