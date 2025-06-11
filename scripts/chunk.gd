@@ -59,6 +59,7 @@ func update() -> void:
 			for z in range(DIMENSIONS.z):
 				if blocks[x][y][z] != null:
 					create_block(Vector3i(x, y, z))
+					surface_tool.set_material(blocks[x][y][z].material)
 	var mesh = surface_tool.commit()
 	mesh_instance_3d.mesh = mesh
 	collision_shape_3d.shape = mesh.create_trimesh_shape()
@@ -72,10 +73,20 @@ func create_block(block_position: Vector3i) -> void:
 	create_face(BACK_FACE, block_position)
 				
 func create_face(face: Array, block_position: Vector3i) -> void:
-	var a = VERTICES[face[0]] + block_position
-	var b = VERTICES[face[1]] + block_position
-	var c = VERTICES[face[2]] + block_position
-	var d = VERTICES[face[3]] + block_position
+	var a: Vector3 = VERTICES[face[0]] + block_position
+	var b: Vector3 = VERTICES[face[1]] + block_position
+	var c: Vector3 = VERTICES[face[2]] + block_position
+	var d: Vector3 = VERTICES[face[3]] + block_position
 	
-	surface_tool.add_triangle_fan(([a, b, c]))
-	surface_tool.add_triangle_fan(([a, c, d]))
+	var uv_a = Vector2(0, 0)
+	var uv_b = Vector2(0, 1.0)
+	var uv_c = Vector2(1.0, 1.0)
+	var uv_d = Vector2(1.0, 0)
+	
+	# Calculate normals
+	var side_a = b - a
+	var side_b = a - c
+	var normal = side_a.cross(side_b)
+	
+	surface_tool.add_triangle_fan([a, b, c], [uv_a, uv_b, uv_c], [], [], [normal])
+	surface_tool.add_triangle_fan([a, c, d], [uv_a, uv_c, uv_d], [], [], [normal])
