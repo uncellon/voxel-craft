@@ -55,12 +55,16 @@ func get_current_player_chunk_pos() -> Vector2i:
 
 func load_chunks_at_player() -> void:
 	var new_chunk_positions = []
-	for x in range(-radius, radius + 1):
-		for z in range(-radius, radius + 1):
-			var chunk_pos = player_chunk_pos + Vector2i(x, z)
-			if loaded_chunks.has(chunk_pos) or (chunk_pos - player_chunk_pos).length() > radius:
-				continue
-			new_chunk_positions.append(chunk_pos)
+	var radius_squared = radius * radius
+
+	for r in range(1, radius + 1):
+		for x in range(-r, r + 1):
+			for y in range(-r, r + 1):
+				if abs(x) != r and abs(y) != r:
+					continue # Skip internal points
+				var chunk_pos = player_chunk_pos + Vector2i(x, y)
+				if not loaded_chunks.has(chunk_pos) and (chunk_pos - player_chunk_pos).length_squared() <= radius_squared:
+					new_chunk_positions.append(chunk_pos)
 
 	chunk_loader.push_chunk_positions_to_load(new_chunk_positions)
 
