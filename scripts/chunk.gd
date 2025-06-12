@@ -1,4 +1,5 @@
-class_name Chunk extends StaticBody3D
+class_name Chunk
+extends StaticBody3D
 
 const VERTICES = [
 	Vector3i(0, 0, 0),
@@ -23,7 +24,7 @@ const BACK_FACE   = [2, 0, 1, 3]
 const DIMENSIONS = Vector3i(8, 64, 8)
 
 @export var chunk_position: Vector2i
-@export var chunk_generator: ChunkGenerator
+@export var chunk_generator: AbstractChunkGenerator
 
 var collision_shape_3d = CollisionShape3D.new()
 var mesh_instance_3d = MeshInstance3D.new()

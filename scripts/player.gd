@@ -1,7 +1,7 @@
 extends CharacterBody3D
 
 const SPEED = 5.0 * 5
-const JUMP_VELOCITY = 6.5
+const JUMP_VELOCITY = 6.5 * 10
 
 var look_sensetivity = 0.002
 
@@ -10,7 +10,7 @@ var look_sensetivity = 0.002
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		rotation.y = rotation.y - event.relative.x * look_sensetivity
@@ -36,7 +36,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
-		
+
 	# Handle mouse clicks
 	if Input.is_action_just_pressed("left_click"):
 		if ray_cast_3d.is_colliding() and ray_cast_3d.get_collider().has_method("destroy_block"):

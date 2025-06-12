@@ -1,13 +1,13 @@
 extends Node3D
 
-@export var radius: int = 2
+@export var radius: int = 4
 @export var player: CharacterBody3D
+@export var chunk_generator: AbstractChunkGenerator
 
-var player_chunk_position: Vector2i
+var player_chunk_pos: Vector2i
 var loaded_chunks: Dictionary
 var chunk_loader = ChunkLoader.new()
 
-var chunk_generator = PerlinNoiseChunkGenerator.new()
 var chunk_create_strategy = func(chunk_position: Vector2i) -> Chunk:
 	var chunk = Chunk.new()
 	chunk.chunk_position = chunk_position
@@ -16,45 +16,40 @@ var chunk_create_strategy = func(chunk_position: Vector2i) -> Chunk:
 	return chunk
 
 func _ready() -> void:
-	player_chunk_position = get_current_player_chunk_position()
-	#load_chunks_at_player()
+	player_chunk_pos = get_current_player_chunk_pos()
 	chunk_loader.chunk_create_strategy = chunk_create_strategy
 
-	for x in range(-radius, radius + 1):
-		for z in range(-radius, radius + 1):
-			var chunk_position = player_chunk_position + Vector2i(x, z)
-			if loaded_chunks.has(chunk_position):
-				continue
-			var chunk = chunk_create_strategy.call(chunk_position)
-			loaded_chunks[chunk_position] = chunk
-			add_child(chunk)
+	# Load only one chunk where the player is located
+	var player_chunk = chunk_create_strategy.call(player_chunk_pos)
+	loaded_chunks[player_chunk_pos] = player_chunk
+	add_child(player_chunk)
+
+	load_chunks_at_player()
 
 	# Check that player not stuck in current position
-	var current_chunk: Chunk = loaded_chunks[player_chunk_position]
-	var pcp = floor(player.position / Chunk.DIMENSIONS.x)
-	for y in range(pcp.y, Chunk.DIMENSIONS.y):
-		if current_chunk.is_solid(Vector3i(
-			pcp.x - player_chunk_position.x * Chunk.DIMENSIONS.x,
+	# This is temporary method because player can stuck in between X and Z axis
+	for y in range(player_chunk_pos.y, Chunk.DIMENSIONS.y):
+		if player_chunk.is_solid(Vector3i(
+			player.position.x - player_chunk_pos.x * Chunk.DIMENSIONS.x,
 			y,
-			pcp.z - player_chunk_position.y * Chunk.DIMENSIONS.x,
-		)) or current_chunk.is_solid(Vector3i(
-			pcp.x - player_chunk_position.x * Chunk.DIMENSIONS.x,
+			player.position.z - player_chunk_pos.y * Chunk.DIMENSIONS.z
+		)) or player_chunk.is_solid(Vector3i(
+			player_chunk_pos.x * Chunk.DIMENSIONS.x + player.position.x,
 			y + 1,
-			pcp.z - player_chunk_position.y * Chunk.DIMENSIONS.x,
+			player_chunk_pos.y * Chunk.DIMENSIONS.z + player.position.z,
 		)):
 			continue
-		player.position.y = y + 10
+		player.position.y = y + 1
 		break
 
 func _process(_delta: float) -> void:
-	var current_player_chunk_position = get_current_player_chunk_position()
-	if current_player_chunk_position != player_chunk_position or chunk_loader.has_loaded_chunks():
-		player_chunk_position = current_player_chunk_position
-		unload_chunks()
+	var new_player_chunk_pos = get_current_player_chunk_pos()
+	if new_player_chunk_pos != player_chunk_pos or chunk_loader.has_loaded_chunks():
+		player_chunk_pos = new_player_chunk_pos
+		unload_distant_chunks()
 		load_chunks_at_player()
 
-func get_current_player_chunk_position() -> Vector2i:
-	# Warning: need to find way how to syncronize size of chunk
+func get_current_player_chunk_pos() -> Vector2i:
 	var pcp = floor(player.position / Chunk.DIMENSIONS.x)
 	return Vector2i(pcp.x, pcp.z)
 
@@ -62,26 +57,28 @@ func load_chunks_at_player() -> void:
 	var new_chunk_positions = []
 	for x in range(-radius, radius + 1):
 		for z in range(-radius, radius + 1):
-			var chunk_position = player_chunk_position + Vector2i(x, z)
-			if loaded_chunks.has(chunk_position):
+			var chunk_pos = player_chunk_pos + Vector2i(x, z)
+			if loaded_chunks.has(chunk_pos) or (chunk_pos - player_chunk_pos).length() > radius:
 				continue
-			new_chunk_positions.append(chunk_position)
+			new_chunk_positions.append(chunk_pos)
 
 	chunk_loader.push_chunk_positions_to_load(new_chunk_positions)
 
 	# Read loaded chunks by thread
 	var new_loaded_chunks = chunk_loader.get_loaded_chunks()
 	for new_loaded_chunk in new_loaded_chunks:
+		# Filter outdated (distant) chunks
+		if (player_chunk_pos - new_loaded_chunk.chunk_position).length() > radius:
+			continue
+
 		loaded_chunks[new_loaded_chunk.chunk_position] = new_loaded_chunk
 		add_child(new_loaded_chunk)
 
-func unload_chunks() -> void:
-	var loaded_chunks_positions: Array = loaded_chunks.keys()
-	for chunk_position in loaded_chunks_positions:
-		if (chunk_position.x - radius > player_chunk_position.x or \
-			chunk_position.x + radius < player_chunk_position.x or \
-			chunk_position.y - radius > player_chunk_position.y or \
-			chunk_position.y + radius < player_chunk_position.y):
-			loaded_chunks[chunk_position].queue_free()
-			remove_child(loaded_chunks[chunk_position])
-			loaded_chunks.erase(chunk_position)
+func unload_distant_chunks() -> void:
+	var loaded_chunk_poss: Array = loaded_chunks.keys()
+
+	for chunk_pos in loaded_chunk_poss:
+		if (chunk_pos - player_chunk_pos).length() > radius:
+			loaded_chunks[chunk_pos].queue_free()
+			remove_child(loaded_chunks[chunk_pos])
+			loaded_chunks.erase(chunk_pos)

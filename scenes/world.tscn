@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://c5mf80appnfn"]
+[gd_scene load_steps=9 format=3 uid="uid://c5mf80appnfn"]
 
 [ext_resource type="PackedScene" uid="uid://dcr660qxbona2" path="res://scenes/player.tscn" id="1_nnsk1"]
 [ext_resource type="PackedScene" uid="uid://bq7s6ekucwver" path="res://scenes/debug_ui.tscn" id="2_rwgxs"]
 [ext_resource type="PackedScene" uid="uid://byveqldxgj6e1" path="res://scenes/chunk_manager.tscn" id="3_4wyf3"]
+[ext_resource type="Script" uid="uid://cf7cc8mfrn7sg" path="res://scripts/chunk_generators/perlin_noise_chunk_generator.gd" id="4_k0juu"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_e5uuo"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -17,6 +18,10 @@ sky = SubResource("Sky_nnsk1")
 tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="Resource" id="Resource_71j4m"]
+script = ExtResource("4_k0juu")
+metadata/_custom_type_script = "uid://cf7cc8mfrn7sg"
+
 [node name="World" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -27,7 +32,7 @@ transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75
 shadow_enabled = true
 
 [node name="Player" parent="." instance=ExtResource("1_nnsk1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, 5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 27, 5)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, 5, -0.5, 5)
@@ -37,5 +42,5 @@ use_collision = true
 mouse_filter = 1
 
 [node name="ChunkManager" parent="." node_paths=PackedStringArray("player") instance=ExtResource("3_4wyf3")]
-radius = 4
 player = NodePath("../Player")
+chunk_generator = SubResource("Resource_71j4m")

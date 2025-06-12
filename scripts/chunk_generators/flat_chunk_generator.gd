@@ -1,4 +1,4 @@
-class_name FlatChunkGenerator extends ChunkGenerator
+class_name FlatChunkGenerator extends AbstractChunkGenerator
 
 func get_block_id(block_pos: Vector3i) -> BlocksDictionary.Id:
 	if block_pos.y < 1:
