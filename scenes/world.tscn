@@ -42,5 +42,6 @@ use_collision = true
 mouse_filter = 1
 
 [node name="ChunkManager" parent="." node_paths=PackedStringArray("player") instance=ExtResource("3_4wyf3")]
+radius = 16
 player = NodePath("../Player")
 chunk_generator = SubResource("Resource_71j4m")
