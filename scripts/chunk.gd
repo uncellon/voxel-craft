@@ -20,8 +20,8 @@ const RIGHT_FACE  = [3, 1, 5, 7]
 const FRONT_FACE  = [7, 5, 4, 6]
 const BACK_FACE   = [2, 0, 1, 3]
 
-# const DIMENSIONS = Vector3i(32, 128, 32)
-const DIMENSIONS = Vector3i(8, 64, 8)
+const DIMENSIONS = Vector3i(16, 128, 16)
+# const DIMENSIONS = Vector3i(8, 64, 8)
 
 @export var chunk_position: Vector2i
 @export var chunk_generator: AbstractChunkGenerator
@@ -42,10 +42,15 @@ func _init() -> void:
 			block_ids[x][y] = []
 			block_ids[x][y].resize(DIMENSIONS.z)
 
-
-func _ready() -> void:
 	add_child(collision_shape_3d)
 	add_child(mesh_instance_3d)
+
+func _ready() -> void:
+	pass
+
+func _exit_tree() -> void:
+	mesh_instance_3d.queue_free()
+	collision_shape_3d.queue_free()
 
 func fill_and_draw_RENAME_THIS() -> void:
 	fill()

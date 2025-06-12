@@ -84,11 +84,8 @@ func loop(index: int) -> void:
 		var slice_end = thread_chunks_chunk_limit
 		if slice_end > chunk_positions_to_load.size():
 			slice_end = chunk_positions_to_load.size()
-		#print(str("Before: ", chunk_positions_to_load))
 		chunk_poss_to_load_locals[index] = chunk_positions_to_load.slice(0, slice_end)
 		chunk_positions_to_load = chunk_positions_to_load.slice(slice_end)
-		#print(str("Slice: ", chunk_poss_to_load_locals[index]))
-		#print(str("Remains: ", chunk_positions_to_load))
 
 		chunk_poss_to_load_mtx.unlock()
 

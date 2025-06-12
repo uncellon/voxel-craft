@@ -73,6 +73,7 @@ func load_chunks_at_player() -> void:
 	for new_loaded_chunk in new_loaded_chunks:
 		# Filter outdated (distant) chunks
 		if (player_chunk_pos - new_loaded_chunk.chunk_position).length() > radius:
+			new_loaded_chunk.queue_free()
 			continue
 
 		loaded_chunks[new_loaded_chunk.chunk_position] = new_loaded_chunk
@@ -84,5 +85,4 @@ func unload_distant_chunks() -> void:
 	for chunk_pos in loaded_chunk_poss:
 		if (chunk_pos - player_chunk_pos).length() > radius:
 			loaded_chunks[chunk_pos].queue_free()
-			remove_child(loaded_chunks[chunk_pos])
 			loaded_chunks.erase(chunk_pos)
