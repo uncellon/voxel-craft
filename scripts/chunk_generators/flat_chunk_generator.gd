@@ -1,7 +1,6 @@
-class_name FlatChunkGenerator extends Resource
+class_name FlatChunkGenerator extends ChunkGenerator
 
-func calc_block(block_position: Vector3i) -> BlockResource:
-	if block_position.y < 1:
-		return load("res://assets/blocks/planks.tres")
-		#var block = BlockResource.new()
-	return null
+func get_block_id(block_pos: Vector3i) -> BlocksDictionary.Id:
+	if block_pos.y < 1:
+		return BlocksDictionary.Id.GRASS
+	return BlocksDictionary.Id.AIR

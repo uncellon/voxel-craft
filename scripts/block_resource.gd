@@ -11,14 +11,44 @@ enum TextureDirection {
 
 @export var id: int
 @export var name: String
-#@export var textures: Dictionary = {
-	#"top": Vector2(0, 0),
-	#"bottom": Vector2(0, 0),
-	#"left": Vector2(0, 0),
-	#"right": Vector2(0, 0),
-	#"front": Vector2(0, 0),
-	#"back": Vector2(0, 0)
-#}
+@export var texcoords: Dictionary = {
+	"top_face": {
+		"top_left": Vector2(0, 0),
+		"top_right": Vector2(0, 1.0),
+		"bottom_left": Vector2(1.0, 0),
+		"bottom_right": Vector2(1.0, 1.0)
+	},
+	"bottom_face": {
+		"top_left": Vector2(0, 0),
+		"top_right": Vector2(0, 1.0),
+		"bottom_left": Vector2(1.0, 0),
+		"bottom_right": Vector2(1.0, 1.0)
+	},
+	"left_face": {
+		"top_left": Vector2(0, 0),
+		"top_right": Vector2(0, 1.0),
+		"bottom_left": Vector2(1.0, 0),
+		"bottom_right": Vector2(1.0, 1.0)
+	},
+	"right_face": {
+		"top_left": Vector2(0, 0),
+		"top_right": Vector2(0, 1.0),
+		"bottom_left": Vector2(1.0, 0),
+		"bottom_right": Vector2(1.0, 1.0)
+	},
+	"front_face": {
+		"top_left": Vector2(0, 0),
+		"top_right": Vector2(0, 1.0),
+		"bottom_left": Vector2(1.0, 0),
+		"bottom_right": Vector2(1.0, 1.0)
+	},
+	"back_face": {
+		"top_left": Vector2(0, 0),
+		"top_right": Vector2(0, 1.0),
+		"bottom_left": Vector2(1.0, 0),
+		"bottom_right": Vector2(1.0, 1.0)
+	}
+}
 @export var material: Material
 # TO-DO
 #@export var is_collidable: bool = true
