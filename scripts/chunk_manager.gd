@@ -1,21 +1,83 @@
+# @tool
+
 extends Node3D
 
-@export var radius: int = 4
-@export var player: CharacterBody3D
-@export var chunk_generator: AbstractChunkGenerator
+################################################################################
+# Exports                                                                      #
+################################################################################
+
+@export var radius: int = 4:
+	set(new_radius):
+		radius = new_radius
+		reset()
+
+@export var player: CharacterBody3D:
+	set(new_player):
+		player = new_player
+		reset()
+
+@export var chunk_generator: AbstractChunkGenerator:
+	set(new_chunk_generator):
+		chunk_generator = new_chunk_generator
+		reset()
+
+@export var chunk_material: Material:
+	set(new_chunk_material):
+		chunk_material = new_chunk_material
+		reset()
+
+################################################################################
+# Members                                                                      #
+################################################################################
 
 var player_chunk_pos: Vector2i
 var loaded_chunks: Dictionary
 var chunk_loader = ChunkLoader.new()
+var blocks_texture_array = BlocksTextureArray.new()
 
 var chunk_create_strategy = func(chunk_position: Vector2i) -> Chunk:
 	var chunk = Chunk.new()
 	chunk.chunk_position = chunk_position
 	chunk.chunk_generator = chunk_generator
+	chunk.texture_array = blocks_texture_array
+	chunk.material = chunk_material
 	chunk.fill_and_draw_RENAME_THIS()
 	return chunk
 
+var process_strategy: Callable = editor_process_strategy
+
+################################################################################
+# Overridden built-in methods                                                  #
+################################################################################
+
 func _ready() -> void:
+	init()
+
+func _process(_delta: float) -> void:
+	process_strategy.call()
+
+################################################################################
+# Custom methods                                                               #
+################################################################################
+
+func reset() -> void:
+	clean()
+	init()
+
+func clean() -> void:
+	for chunk_pos in loaded_chunks:
+		loaded_chunks[chunk_pos].queue_free()
+	loaded_chunks.clear()
+
+func init() -> void:
+	if not Engine.is_editor_hint():
+		process_strategy.bind(game_process_strategy)
+	else:
+		process_strategy.bind(editor_process_strategy)
+
+	if player == null:
+		return
+
 	player_chunk_pos = get_current_player_chunk_pos()
 	chunk_loader.chunk_create_strategy = chunk_create_strategy
 
@@ -42,7 +104,12 @@ func _ready() -> void:
 		player.position.y = y + 1
 		break
 
-func _process(_delta: float) -> void:
+func editor_process_strategy() -> void:
+	if player == null:
+		return
+	game_process_strategy()
+
+func game_process_strategy() -> void:
 	var new_player_chunk_pos = get_current_player_chunk_pos()
 	if new_player_chunk_pos != player_chunk_pos or chunk_loader.has_loaded_chunks():
 		player_chunk_pos = new_player_chunk_pos

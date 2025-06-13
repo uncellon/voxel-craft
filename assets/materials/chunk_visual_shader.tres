@@ -1,0 +1,66 @@
+[gd_resource type="VisualShader" load_steps=6 format=3 uid="uid://d4batt1qm5r18"]
+
+[sub_resource type="VisualShaderNodeTexture2DArray" id="VisualShaderNodeTexture2DArray_dhh8b"]
+source = 1
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_o1vae"]
+expanded_output_ports = [0]
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_gk5wn"]
+
+[sub_resource type="VisualShaderNodeTexture2DArrayParameter" id="VisualShaderNodeTexture2DArrayParameter_dhh8b"]
+parameter_name = "texture_array"
+texture_filter = 1
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_dhh8b"]
+expanded_output_ports = [0]
+input_name = "uv2"
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+
+uniform sampler2DArray texture_array : filter_nearest;
+
+
+
+void fragment() {
+// Input:4
+	vec2 n_out4p0 = UV;
+	float n_out4p1 = n_out4p0.r;
+	float n_out4p2 = n_out4p0.g;
+
+
+// Input:8
+	vec2 n_out8p0 = UV2;
+	float n_out8p1 = n_out8p0.r;
+
+
+// VectorCompose:6
+	vec3 n_out6p0 = vec3(n_out4p1, n_out4p2, n_out8p1);
+
+
+	vec4 n_out2p0;
+// Texture2DArray:2
+	n_out2p0 = texture(texture_array, n_out6p0);
+
+
+// Output:0
+	ALBEDO = vec3(n_out2p0.xyz);
+
+
+}
+"
+nodes/fragment/0/position = Vector2(-60, 120)
+nodes/fragment/2/node = SubResource("VisualShaderNodeTexture2DArray_dhh8b")
+nodes/fragment/2/position = Vector2(-280, 120)
+nodes/fragment/4/node = SubResource("VisualShaderNodeInput_o1vae")
+nodes/fragment/4/position = Vector2(-820, 20)
+nodes/fragment/6/node = SubResource("VisualShaderNodeVectorCompose_gk5wn")
+nodes/fragment/6/position = Vector2(-500, 40)
+nodes/fragment/7/node = SubResource("VisualShaderNodeTexture2DArrayParameter_dhh8b")
+nodes/fragment/7/position = Vector2(-840, 420)
+nodes/fragment/8/node = SubResource("VisualShaderNodeInput_dhh8b")
+nodes/fragment/8/position = Vector2(-820, 200)
+nodes/fragment/connections = PackedInt32Array(6, 0, 2, 0, 4, 1, 6, 0, 4, 2, 6, 1, 2, 0, 0, 0, 7, 0, 2, 2, 8, 1, 6, 2)

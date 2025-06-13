@@ -1,3 +1,4 @@
+@tool
 class_name PerlinNoiseChunkGenerator extends AbstractChunkGenerator
 
 const NOISE_FACTOR = 16

@@ -1,0 +1,2 @@
+- Try to fix "mutexed" `SurfaceTool`
+- Fix undeleted first chunk under player
