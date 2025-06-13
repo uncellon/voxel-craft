@@ -105,3 +105,35 @@ func unload_distant_chunks() -> void:
 		if (chunk_pos - player_chunk_pos).length() > view_radius:
 			loaded_chunks[chunk_pos].queue_free()
 			loaded_chunks.erase(chunk_pos)
+
+func destroy_block(world_pos: Vector3) -> void:
+	_modify_block(world_pos, BlockDatabase.Id.AIR)
+
+func place_block(world_pos: Vector3, block_id: BlockDatabase.Id) -> void:
+	_modify_block(world_pos, block_id)
+
+func _get_chunk_and_local_pos(world_pos: Vector3) -> Dictionary:
+	var floored_pos := Vector3i(world_pos.floor())
+	var chunk_pos := Vector2i(
+		floori(world_pos.x / float(Chunk.DIMENSIONS.x)),
+		floori(world_pos.z / float(Chunk.DIMENSIONS.z))
+	)
+
+	var local_pos := Vector3i(
+		posmod(floored_pos.x, Chunk.DIMENSIONS.x),
+		floored_pos.y,
+		posmod(floored_pos.z, Chunk.DIMENSIONS.z)
+	)
+
+	return {
+		"chunk_pos": chunk_pos,
+		"local_pos": local_pos
+	}
+
+func _modify_block(world_pos: Vector3, block_id: BlockDatabase.Id) -> bool:
+	var positions = _get_chunk_and_local_pos(world_pos)
+
+	if loaded_chunks.has(positions.chunk_pos):
+		loaded_chunks[positions.chunk_pos].set_block(positions.local_pos, block_id)
+		return true
+	return false

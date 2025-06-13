@@ -171,23 +171,6 @@ func is_solid(block_position: Vector3i) -> bool:
 func calc_world_pos_by_chunk_pos(input: Vector3i) -> Vector3i:
 	return Vector3i(chunk_position.x * DIMENSIONS.x + input.x, input.y, chunk_position.y * DIMENSIONS.z + input.z)
 
-func normalize_position(pos: Vector3):
-	return Vector3i(floor(pos)) % DIMENSIONS
-
-func destroy_block(pos: Vector3):
-	print(str("[Chunk]: Destroy block requested: ", pos))
-
-	var norm_pos = normalize_position(pos)
-
-	if block_ids[norm_pos.x][norm_pos.y][norm_pos.z] != BlockDatabase.Id.AIR:
-		block_ids[norm_pos.x][norm_pos.y][norm_pos.z] = BlockDatabase.Id.AIR
-		draw()
-
-func place_block(pos: Vector3, block_id: BlockDatabase.Id):
-	print(str("[Chunk]: Place block requested: ", pos))
-
-	var norm_pos = normalize_position(pos)
-
-	if block_ids[norm_pos.x][norm_pos.y][norm_pos.z] == BlockDatabase.Id.AIR:
-		block_ids[norm_pos.x][norm_pos.y][norm_pos.z] = block_id
-		draw()
+func set_block(block_pos: Vector3i, block_id: BlockDatabase.Id):
+	block_ids[block_pos.x][block_pos.y][block_pos.z] = block_id
+	draw()

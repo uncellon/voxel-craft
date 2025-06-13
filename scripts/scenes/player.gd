@@ -19,6 +19,7 @@ var look_sensetivity = 0.002
 
 @onready var camera_3d: Camera3D = $Camera3D
 @onready var ray_cast_3d: RayCast3D = $Camera3D/RayCast3D
+@onready var chunk_manager: Node3D = $"../ChunkManager"
 
 ################################################################################
 # Overridden built-in methods                                                  #
@@ -55,13 +56,13 @@ func _physics_process(delta: float) -> void:
 
 	# Handle mouse clicks
 	if Input.is_action_just_pressed("left_click"):
-		if ray_cast_3d.is_colliding() and ray_cast_3d.get_collider().has_method("destroy_block"):
-			ray_cast_3d.get_collider().destroy_block(
+		if ray_cast_3d.is_colliding():
+			chunk_manager.destroy_block(
 				ray_cast_3d.get_collision_point() - (ray_cast_3d.get_collision_normal() / 2)
 			)
 	if Input.is_action_just_pressed("right_click"):
-		if ray_cast_3d.is_colliding() and ray_cast_3d.get_collider().has_method("place_block"):
-			ray_cast_3d.get_collider().place_block(
+		if ray_cast_3d.is_colliding():
+			chunk_manager.place_block(
 				ray_cast_3d.get_collision_point() + (ray_cast_3d.get_collision_normal() / 2), BlockDatabase.Id.PLANKS
 			)
 
