@@ -1,7 +1,7 @@
 [gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://d0ckgfjf4yxha"]
 
-[ext_resource type="Shader" uid="uid://d4batt1qm5r18" path="res://assets/materials/chunk_visual_shader.tres" id="1_ct6wn"]
-[ext_resource type="Texture2DArray" uid="uid://b17h46a74bc4v" path="res://assets/textures/new_texture_2d_array.tres" id="2_j8gva"]
+[ext_resource type="Shader" uid="uid://d4batt1qm5r18" path="res://assets/shaders/chunk_visual_shader.tres" id="1_ct6wn"]
+[ext_resource type="Texture2DArray" uid="uid://b17h46a74bc4v" path="res://assets/textures/blocks_texture_2d_array.tres" id="2_j8gva"]
 
 [resource]
 render_priority = 0

@@ -1,2 +1,2 @@
 - Try to fix "mutexed" `SurfaceTool`
-- Fix undeleted first chunk under player
+- Add proper check for player getting stuck in blocks

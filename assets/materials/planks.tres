@@ -1,7 +1,0 @@
-[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://cl8c1jo5g4ri1"]
-
-[ext_resource type="Texture2D" uid="uid://djta5dwdnq6ju" path="res://assets/textures/planks.png" id="1_uesbr"]
-
-[resource]
-albedo_texture = ExtResource("1_uesbr")
-texture_filter = 0

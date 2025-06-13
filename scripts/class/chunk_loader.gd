@@ -1,9 +1,17 @@
 class_name ChunkLoader
 extends RefCounted
 
+################################################################################
+# Exports                                                                      #
+################################################################################
+
 @export var chunk_create_strategy: Callable
 @export var workers_count = 8 # How many threads will load chunks
 @export var thread_chunks_chunk_limit = 4 # How many chunks thread will load per loop
+
+################################################################################
+# Members                                                                      #
+################################################################################
 
 var threads: Array[Thread]
 var is_running = true
@@ -15,7 +23,11 @@ var chunk_poss_to_load_mtx = Mutex.new()
 var loaded_chunks = []
 var loaded_chunks_mtx = Mutex.new()
 
-var chunk_poss_to_load_locals = [] # Array of array
+var chunk_poss_to_load_locals = [] # Array of array for every worker
+
+################################################################################
+# Overridden built-in methods                                                  #
+################################################################################
 
 func _init() -> void:
 	threads.resize(workers_count)
@@ -26,7 +38,7 @@ func _init() -> void:
 		threads[i] = Thread.new()
 		threads[i].start(loop.bind(i))
 
-	# !!! For-each in this scenario causes memory leak !!!
+	# !!! For-each in this scenario causes double allocation (copy instead &) !!!
 	# for thread in threads:
 	# 	thread = Thread.new()
 	# 	thread.start(loop)
@@ -37,11 +49,15 @@ func _exit_tree() -> void:
 	for thread in threads:
 		thread.wait_to_finish()
 
+################################################################################
+# Custom methods                                                               #
+################################################################################
+
 func push_chunk_positions_to_load(new_chunk_positions_to_load: Array):
 	loaded_chunks_mtx.lock()
 	chunk_poss_to_load_mtx.lock()
 
-	# Check every chunk position in already prepared and loaded chunks
+	# Check every chunk position in already prepared and loaded chunks to exclude duplicates
 	for chunk_poss_to_load_local in chunk_poss_to_load_locals:
 		for chunk_position in chunk_poss_to_load_local: # Currently processing queue
 			if new_chunk_positions_to_load.has(chunk_position):

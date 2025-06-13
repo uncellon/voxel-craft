@@ -1,23 +1,25 @@
-class_name BlocksTextureArray
+class_name BlocksTexture2DArray
 extends Texture2DArray
 
 ################################################################################
 # Members                                                                      #
 ################################################################################
 
-var indices_by_ids: Dictionary # BlockDictionary.Id : Offset
-var loaded_textures: Array = []
-var current_free_index: int = 0
+var slice_offsets_by_ids: Dictionary
+var last_free_index: int = 0
 
 ################################################################################
 # Overridden built-in methods                                                  #
 ################################################################################
 
 func _init() -> void:
-	for block_id in BlocksDictionary.BLOCKS:
-		var indices = []
-		indices_by_ids[block_id] = current_free_index
-		for texture_path in BlocksDictionary.BLOCKS[block_id]["textures"]:
+	var loaded_textures = []
+
+	for block_id in BlockDatabase.BLOCKS:
+		slice_offsets_by_ids[block_id] = last_free_index
+		for texture_path in BlockDatabase.get_texture_paths(block_id):
+			last_free_index = last_free_index + 1
+
 			var res = ResourceLoader.load(texture_path)
 			var image = res.get_image()
 
@@ -28,10 +30,6 @@ func _init() -> void:
 
 			loaded_textures.append(image)
 
-			indices.append(current_free_index)
-			print(str("Loaded texture: \"", texture_path, "\" with index: ", current_free_index))
-			current_free_index = current_free_index + 1
-
 	create_from_images(loaded_textures)
 
 
@@ -39,5 +37,5 @@ func _init() -> void:
 # Custom methods                                                               #
 ################################################################################
 
-func get_textures_indices(id: BlocksDictionary.Id) -> int:
-	return indices_by_ids[id]
+func get_texture_slice_offset(id: BlockDatabase.Id) -> int:
+	return slice_offsets_by_ids[id]

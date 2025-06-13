@@ -1,0 +1,6 @@
+[gd_resource type="Texture2DArray" script_class="BlocksTexture2DArray" load_steps=2 format=3 uid="uid://b17h46a74bc4v"]
+
+[ext_resource type="Script" uid="uid://b75fwajbndj14" path="res://scripts/textures/blocks_texture_2d_array.gd" id="1_plk8n"]
+
+[resource]
+script = ExtResource("1_plk8n")
