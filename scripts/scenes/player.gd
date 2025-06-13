@@ -4,7 +4,7 @@ extends CharacterBody3D
 # Constants                                                                    #
 ################################################################################
 
-const SPEED = 5.0 * 5
+const SPEED = 5.0
 const JUMP_VELOCITY = 6.5
 
 ################################################################################
@@ -56,13 +56,13 @@ func _physics_process(delta: float) -> void:
 	# Handle mouse clicks
 	if Input.is_action_just_pressed("left_click"):
 		if ray_cast_3d.is_colliding() and ray_cast_3d.get_collider().has_method("destroy_block"):
-			ray_cast_3d.get_collider().destroy(
+			ray_cast_3d.get_collider().destroy_block(
 				ray_cast_3d.get_collision_point() - (ray_cast_3d.get_collision_normal() / 2)
 			)
 	if Input.is_action_just_pressed("right_click"):
 		if ray_cast_3d.is_colliding() and ray_cast_3d.get_collider().has_method("place_block"):
-			ray_cast_3d.get_collider().place(
-				ray_cast_3d.get_collision_point() + (ray_cast_3d.get_collision_normal() / 2), 1
+			ray_cast_3d.get_collider().place_block(
+				ray_cast_3d.get_collision_point() + (ray_cast_3d.get_collision_normal() / 2), BlockDatabase.Id.PLANKS
 			)
 
 	move_and_slide()
