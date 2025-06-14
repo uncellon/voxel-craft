@@ -2,13 +2,13 @@ class_name Chunk
 extends StaticBody3D
 
 ################################################################################
-# Constants                                                                    #
+# Static variables                                                             #
 ################################################################################
 
-# This constants is not constants due to the issue:
+# This constants is static variables due to the issue:
 # https://github.com/godotengine/godot/issues/85557
 
-var VERTICES = [
+static var VERTICES = [
 	Vector3i(0, 0, 0),
 	Vector3i(1, 0, 0),
 	Vector3i(0, 1, 0),
@@ -20,15 +20,15 @@ var VERTICES = [
 ]
 
 # Faces vertices painting order
-var TOP_FACE    = [2, 3, 7, 6]
-var BOTTOM_FACE = [0, 4, 5, 1]
-var LEFT_FACE   = [6, 4, 0, 2]
-var RIGHT_FACE  = [3, 1, 5, 7]
-var FRONT_FACE  = [7, 5, 4, 6]
-var BACK_FACE   = [2, 0, 1, 3]
+static var TOP_FACE    = [2, 3, 7, 6]
+static var BOTTOM_FACE = [0, 4, 5, 1]
+static var LEFT_FACE   = [6, 4, 0, 2]
+static var RIGHT_FACE  = [3, 1, 5, 7]
+static var FRONT_FACE  = [7, 5, 4, 6]
+static var BACK_FACE   = [2, 0, 1, 3]
 
-const DIMENSIONS = Vector3i(16, 128, 16)
-# const DIMENSIONS = Vector3i(8, 64, 8)
+static var DIMENSIONS = Vector3i(16, 128, 16)
+# static var DIMENSIONS = Vector3i(8, 64, 8)
 
 ################################################################################
 # Exports                                                                      #
@@ -44,7 +44,7 @@ const DIMENSIONS = Vector3i(16, 128, 16)
 
 var collision_shape_3d = CollisionShape3D.new()
 var mesh_instance_3d = MeshInstance3D.new()
-var surface_tool: SurfaceTool = SurfaceTool.new()
+var surface_tool: SurfaceTool = null
 var block_ids # Three-dimensional array of block Ids
 
 ################################################################################
@@ -83,6 +83,7 @@ func fill() -> void:
 				block_ids[x][y][z] = chunk_generator.get_block_id(calc_world_pos_by_chunk_pos(Vector3i(x, y, z)))
 
 func draw() -> void:
+	surface_tool = SurfaceTool.new()
 	surface_tool.begin(Mesh.PRIMITIVE_TRIANGLES)
 
 	for x in range(DIMENSIONS.x):
@@ -97,6 +98,7 @@ func draw() -> void:
 
 	surface_tool.set_material(material)
 	var mesh = surface_tool.commit()
+	surface_tool = null
 
 	# Apply mesh and generate collision shape
 	mesh_instance_3d.mesh = mesh

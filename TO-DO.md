@@ -1,2 +1,2 @@
-- Try to fix "mutexed" `SurfaceTool`
 - Add proper check for player getting stuck in blocks
+- Optimize block place/remove
