@@ -1,2 +1,3 @@
 - Add proper check for player getting stuck in blocks
 - Optimize block place/remove
+- Add settings menu (at least smoothing option)

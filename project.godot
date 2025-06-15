@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Voxel Craft"
+config/name="Godot Craft"
 run/main_scene="uid://c5mf80appnfn"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
@@ -56,3 +56,7 @@ right_click={
 [physics]
 
 3d/default_gravity=19.6
+
+[rendering]
+
+anti_aliasing/quality/use_taa=true
