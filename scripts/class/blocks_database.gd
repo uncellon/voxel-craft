@@ -8,7 +8,9 @@ extends RefCounted
 enum Id {
 	AIR,
 	GRASS,
-	PLANKS
+	PLANKS,
+	STONE,
+	COBBLESTONE
 }
 
 enum Side {
@@ -42,6 +44,12 @@ const BLOCKS = {
 	},
 	Id.PLANKS: {
 		"textures": [ "res://assets/textures/blocks/planks.png" ]
+	},
+	Id.STONE: {
+		"textures": [ "res://assets/textures/blocks/stone.png" ]
+	},
+	Id.COBBLESTONE: {
+		"textures": [ "res://assets/textures/blocks/cobblestone.png" ]
 	}
 }
 

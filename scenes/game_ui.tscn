@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://6tlyd1pytyw3"]
+[gd_scene load_steps=4 format=3 uid="uid://6tlyd1pytyw3"]
 
 [ext_resource type="Texture2D" uid="uid://bhjebq0kbvb0s" path="res://assets/textures/crosshair.png" id="1_yubou"]
+[ext_resource type="Texture2D" uid="uid://kehrmlju7yor" path="res://assets/textures/hotbar.png" id="2_rns2u"]
+[ext_resource type="Texture2D" uid="uid://c763qs5bpu4wt" path="res://assets/textures/hotbar_selection.png" id="3_u001w"]
 
 [node name="GameUI" type="Control"]
 layout_mode = 3
@@ -11,7 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="CrosshairTextureRect" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -25,3 +27,31 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_yubou")
+
+[node name="HotbarTextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -182.0
+offset_top = -44.0
+offset_right = 182.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("2_rns2u")
+
+[node name="HotbarSelectionTextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -24.0
+offset_top = -46.0
+offset_right = 24.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("3_u001w")

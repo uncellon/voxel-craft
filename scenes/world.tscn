@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://c5mf80appnfn"]
+[gd_scene load_steps=12 format=3 uid="uid://c5mf80appnfn"]
 
 [ext_resource type="PackedScene" uid="uid://dcr660qxbona2" path="res://scenes/player.tscn" id="1_nnsk1"]
 [ext_resource type="PackedScene" uid="uid://bq7s6ekucwver" path="res://scenes/debug_ui.tscn" id="2_rwgxs"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://cf7cc8mfrn7sg" path="res://scripts/class/chunk_generators/perlin_noise_chunk_generator.gd" id="4_71j4m"]
 [ext_resource type="Material" uid="uid://d0ckgfjf4yxha" path="res://assets/materials/chunk.tres" id="5_71j4m"]
 [ext_resource type="PackedScene" uid="uid://6tlyd1pytyw3" path="res://scenes/game_ui.tscn" id="6_qfnet"]
+[ext_resource type="Script" uid="uid://cik2ponbpqqg2" path="res://scripts/scenes/game_ui.gd" id="7_i7141"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_e5uuo"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -48,4 +49,6 @@ player = NodePath("../Player")
 chunk_generator = SubResource("Resource_71j4m")
 chunk_material = ExtResource("5_71j4m")
 
-[node name="GameUI" parent="." instance=ExtResource("6_qfnet")]
+[node name="GameUI" parent="." node_paths=PackedStringArray("player") instance=ExtResource("6_qfnet")]
+script = ExtResource("7_i7141")
+player = NodePath("../Player")
