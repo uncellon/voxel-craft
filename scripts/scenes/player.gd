@@ -22,6 +22,20 @@ const HOTBAR_CAPACITY = 9
 var look_sensetivity = 0.002
 var hotbar_selected_item_index = 0
 
+# Temporary inventory
+var inventory = {
+	0: {
+		BlockDatabase.Id.PLANKS: 1
+	},
+	1: {
+		BlockDatabase.Id.COBBLESTONE: 1
+	},
+	2: {
+		BlockDatabase.Id.STONE: 1
+	}
+}
+var selected_block_id = BlockDatabase.Id.AIR
+
 ################################################################################
 # On-ready variables                                                           #
 ################################################################################
@@ -70,10 +84,10 @@ func _physics_process(delta: float) -> void:
 			chunk_manager.destroy_block(
 				ray_cast_3d.get_collision_point() - (ray_cast_3d.get_collision_normal() / 2)
 			)
-	if Input.is_action_just_pressed("right_click"):
+	if Input.is_action_just_pressed("right_click") and selected_block_id != BlockDatabase.Id.AIR:
 		if ray_cast_3d.is_colliding():
 			chunk_manager.place_block(
-				ray_cast_3d.get_collision_point() + (ray_cast_3d.get_collision_normal() / 2), BlockDatabase.Id.PLANKS
+				ray_cast_3d.get_collision_point() + (ray_cast_3d.get_collision_normal() / 2), selected_block_id
 			)
 
 	if Input.is_action_just_pressed("wheel_up"):
@@ -123,3 +137,6 @@ func _set_hotbar_selected_item_index(value: int):
 
 	hotbar_selected_item_index = value
 	hotbar_selected_index_changed.emit(hotbar_selected_item_index)
+
+	if inventory.has(value):
+		selected_block_id = inventory[value].keys()[0]

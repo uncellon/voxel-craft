@@ -5,30 +5,7 @@ extends StaticBody3D
 # Static variables                                                             #
 ################################################################################
 
-# This constants is static variables due to the issue:
-# https://github.com/godotengine/godot/issues/85557
-
-static var VERTICES = [
-	Vector3i(0, 0, 0),
-	Vector3i(1, 0, 0),
-	Vector3i(0, 1, 0),
-	Vector3i(1, 1, 0),
-	Vector3i(0, 0, 1),
-	Vector3i(1, 0, 1),
-	Vector3i(0, 1, 1),
-	Vector3i(1, 1, 1),
-]
-
-# Faces vertices painting order
-static var TOP_FACE    = [2, 3, 7, 6]
-static var BOTTOM_FACE = [0, 4, 5, 1]
-static var LEFT_FACE   = [6, 4, 0, 2]
-static var RIGHT_FACE  = [3, 1, 5, 7]
-static var FRONT_FACE  = [7, 5, 4, 6]
-static var BACK_FACE   = [2, 0, 1, 3]
-
 static var DIMENSIONS = Vector3i(16, 128, 16)
-# static var DIMENSIONS = Vector3i(8, 64, 8)
 
 ################################################################################
 # Exports                                                                      #
@@ -108,32 +85,32 @@ func draw_block(block_pos_chunk: Vector3i, block_pos_world: Vector3i, block_id: 
 	if is_transparent(block_pos_chunk.x, block_pos_chunk.y + 1, block_pos_chunk.z):
 		var texture_slice = BlockDatabase.get_texture_indices(block_id)[BlockDatabase.Side.TOP] + \
 			material.get_shader_parameter("texture_array").get_texture_slice_offset(block_id)
-		draw_face(TOP_FACE, block_pos_world, texture_slice)
+		draw_face(Block.TOP_FACE, block_pos_world, texture_slice)
 
 	if is_transparent(block_pos_chunk.x, block_pos_chunk.y - 1, block_pos_chunk.z):
 		var texture_slice = BlockDatabase.get_texture_indices(block_id)[BlockDatabase.Side.BOTTOM] + \
 			material.get_shader_parameter("texture_array").get_texture_slice_offset(block_id)
-		draw_face(BOTTOM_FACE, block_pos_world, texture_slice)
+		draw_face(Block.BOTTOM_FACE, block_pos_world, texture_slice)
 
 	if is_transparent(block_pos_chunk.x - 1, block_pos_chunk.y, block_pos_chunk.z):
 		var texture_slice = BlockDatabase.get_texture_indices(block_id)[BlockDatabase.Side.LEFT] + \
 			material.get_shader_parameter("texture_array").get_texture_slice_offset(block_id)
-		draw_face(LEFT_FACE, block_pos_world, texture_slice)
+		draw_face(Block.LEFT_FACE, block_pos_world, texture_slice)
 
 	if is_transparent(block_pos_chunk.x + 1, block_pos_chunk.y, block_pos_chunk.z):
 		var texture_slice = BlockDatabase.get_texture_indices(block_id)[BlockDatabase.Side.RIGHT] + \
 			material.get_shader_parameter("texture_array").get_texture_slice_offset(block_id)
-		draw_face(RIGHT_FACE, block_pos_world, texture_slice)
+		draw_face(Block.RIGHT_FACE, block_pos_world, texture_slice)
 
 	if is_transparent(block_pos_chunk.x, block_pos_chunk.y, block_pos_chunk.z + 1):
 		var texture_slice = BlockDatabase.get_texture_indices(block_id)[BlockDatabase.Side.FRONT] + \
 			material.get_shader_parameter("texture_array").get_texture_slice_offset(block_id)
-		draw_face(FRONT_FACE, block_pos_world, texture_slice)
+		draw_face(Block.FRONT_FACE, block_pos_world, texture_slice)
 
 	if is_transparent(block_pos_chunk.x, block_pos_chunk.y, block_pos_chunk.z - 1):
 		var texture_slice = BlockDatabase.get_texture_indices(block_id)[BlockDatabase.Side.BACK] + \
 			material.get_shader_parameter("texture_array").get_texture_slice_offset(block_id)
-		draw_face(BACK_FACE, block_pos_world, texture_slice)
+		draw_face(Block.BACK_FACE, block_pos_world, texture_slice)
 
 func is_transparent(x, y, z) -> bool:
 	if  x >= 0 and x < DIMENSIONS.x and \
@@ -148,10 +125,10 @@ func draw_face(face: Array, block_pos_world: Vector3i, texture_slice: float) -> 
 	# |  \ |
 	# B -- C
 
-	var a: Vector3 = VERTICES[face[0]] + block_pos_world
-	var b: Vector3 = VERTICES[face[1]] + block_pos_world
-	var c: Vector3 = VERTICES[face[2]] + block_pos_world
-	var d: Vector3 = VERTICES[face[3]] + block_pos_world
+	var a: Vector3 = Block.VERTICES[face[0]] + block_pos_world
+	var b: Vector3 = Block.VERTICES[face[1]] + block_pos_world
+	var c: Vector3 = Block.VERTICES[face[2]] + block_pos_world
+	var d: Vector3 = Block.VERTICES[face[3]] + block_pos_world
 
 	# U, V and slice offset
 	var uv_a = Vector2(0.0, 0.0)

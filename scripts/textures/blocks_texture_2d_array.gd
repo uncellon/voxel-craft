@@ -1,3 +1,5 @@
+@tool
+
 class_name BlocksTexture2DArray
 extends Texture2DArray
 
